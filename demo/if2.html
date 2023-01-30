@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="../dist/scent.js"></script>
+  </head>
+  <body>
+    <div style="height: 100px">
+      <button id="i2">test</button>
+    </div>
+    <iframe src="if3.html" frameborder="0"></iframe>
+
+    <script>
+      var scent = Scent.getInstance()
+
+      // scent.on('scent.t33', function(val) {
+      //   console.log('scent.t3: true')
+      //   console.log(val)
+      //   return Promise.resolve(99 )
+      // })
+
+      var btn = document.getElementById('i2')
+      btn.addEventListener('click', function () {
+        scent.emit('scent.t2', 'i2 test')
+      })
+    </script>
+  </body>
+</html>
