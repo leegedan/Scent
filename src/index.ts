@@ -142,8 +142,12 @@ class Hub extends ScentNode {
     }
   }
   /// 同步
-  sync() {
-    this._pigeons = this._pigeons.filter((el) => el.win.parent !== undefined)
+  sync(sourceId: string | undefined) {
+    if (sourceId) {
+      this._pigeons = this._pigeons.filter((el) => el.id !== sourceId)
+    } else {
+      this._pigeons = this._pigeons.filter((el) => el.win.parent !== undefined)
+    }
   }
   /// 广播
   broadcast(message: IMessage) {
@@ -166,6 +170,8 @@ class Hub extends ScentNode {
     if (name === 'ready') {
       // 添加节点
       this.push(sourceId!, win)
+    } else if (name === 'sync') {
+      this.sync(sourceId!)
     } else {
       if (targetId) {
         if (targetId === this._id) {
@@ -194,20 +200,23 @@ class Nub extends ScentNode {
   private _pigeon: Window
   constructor(events: ScentEvent) {
     super(events)
-    this._pigeon = this.getTopWin()
-    this.notify()
+    this._pigeon = window
+    this.ready()
   }
-  getTopWin() {
-    let win: Window = window
+  ready() {
+    let win = this._pigeon
     while ((win = win.parent)) {
       if (win === win.parent) {
         break
       }
     }
-    return win
-  }
-  notify() {
+    this._pigeon = win
+
     this.send({ name: 'ready' })
+
+    window.addEventListener('unload', () => {
+      this.send({ name: 'sync' })
+    })
   }
   broadcast(message: IMessage) {
     this.send(message)
